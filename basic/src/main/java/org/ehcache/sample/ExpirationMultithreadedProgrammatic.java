@@ -23,19 +23,22 @@ public class ExpirationMultithreadedProgrammatic {
     CacheConfigurationBuilder<String, String> configurationBuilder =
             newCacheConfigurationBuilder(String.class, String.class, heap(100).offheap(1, MB))
                     .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(2)));
+    CacheManager cacheManager = null;
     try {
-      CacheManager cacheManager = newCacheManagerBuilder()
+      // Demonstrating how to create CacheManager outside of try(resource) syntax
+      cacheManager = newCacheManagerBuilder()
               .withCache(cacheAlias, configurationBuilder)
               .build(true);
       Cache<String, String> expiryCache = cacheManager.getCache(cacheAlias, String.class, String.class);
 
       exerciseCache(expiryCache);
       Thread.sleep(3000);
-
-      LOGGER.info("Closing cache manager");
-      cacheManager.close();
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
+    } finally {
+      LOGGER.info("Closing cache manager");
+      // CacheManager *might* be null - but don't sweat it for this demo
+      cacheManager.close();
     }
 
     LOGGER.info("Exiting");
