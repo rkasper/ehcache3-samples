@@ -69,20 +69,5 @@ public class ExpirationMultithreadedProgrammatic {
         throw new RuntimeException(e);
       }
     }
-
-    LOGGER.info("Putting to cache");
-    String key = "39396ed3-c4c3-4a0e-ab6c-945e5268b722";
-    expiryCache.put(key, "da one!");
-    String value = expiryCache.get(key);
-    LOGGER.info("Retrieved '{}'", value);
-
-    LOGGER.info("Let cache expire and try again");
-    try {
-      Thread.sleep(2001);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
-    }
-    value = expiryCache.get(key);
-    LOGGER.info("Retrieved '{}'", value);
   }
 }
