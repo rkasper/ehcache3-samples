@@ -28,22 +28,28 @@ public class ExpirationMultithreadedProgrammatic {
             .build(true)) {
       Cache<String, String> expiryCache = cacheManager.getCache(cacheAlias, String.class, String.class);
 
-      LOGGER.info("Putting to cache");
-      String key = "39396ed3-c4c3-4a0e-ab6c-945e5268b722";
-      expiryCache.put(key, "da one!");
-      String value = expiryCache.get(key);
-      LOGGER.info("Retrieved '{}'", value);
-
-      LOGGER.info("Let cache expire and try again");
-      Thread.sleep(2001);
-      value = expiryCache.get(key);
-      LOGGER.info("Retrieved '{}'", value);
-
-      LOGGER.info("Closing cache manager");
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+      exerciseCache(expiryCache);
     }
 
     LOGGER.info("Exiting");
+  }
+
+  private static void exerciseCache(Cache<String, String> expiryCache) {
+    LOGGER.info("Putting to cache");
+    String key = "39396ed3-c4c3-4a0e-ab6c-945e5268b722";
+    expiryCache.put(key, "da one!");
+    String value = expiryCache.get(key);
+    LOGGER.info("Retrieved '{}'", value);
+
+    LOGGER.info("Let cache expire and try again");
+    try {
+      Thread.sleep(2001);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
+    value = expiryCache.get(key);
+    LOGGER.info("Retrieved '{}'", value);
+
+    LOGGER.info("Closing cache manager");
   }
 }
