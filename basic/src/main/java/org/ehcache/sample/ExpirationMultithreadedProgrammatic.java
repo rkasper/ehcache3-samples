@@ -48,10 +48,14 @@ public class ExpirationMultithreadedProgrammatic {
     LOGGER.info("Spawning threads");
     Runnable r = () -> {
       String key = "wow, a random key!";
-      LOGGER.info("Current cached value: '{}'", expiryCache.get(key));
-      LOGGER.info("Putting to cache");
-      expiryCache.put(key, "an amazing value goes here!");
       String value = expiryCache.get(key);
+      LOGGER.info("Current cached value: '{}'", value);
+
+      if (null == value) {
+        LOGGER.info("Putting to cache");
+        expiryCache.put(key, "an amazing value goes here!");
+      }
+      value = expiryCache.get(key);
       LOGGER.info("Retrieved '{}'", value);
 
       LOGGER.info("Let cache expire and try again");
