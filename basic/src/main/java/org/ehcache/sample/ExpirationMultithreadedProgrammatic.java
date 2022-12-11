@@ -20,9 +20,12 @@ public class ExpirationMultithreadedProgrammatic {
   public static void main(String[] args) {
     LOGGER.info("Creating cache manager programmatically");
     String cacheAlias = "basicCache";
+
+    // To monitor the cache, see https://www.ehcache.org/documentation/3.10/cache-event-listeners.html
     CacheConfigurationBuilder<String, String> configurationBuilder =
             newCacheConfigurationBuilder(String.class, String.class, heap(100).offheap(1, MB))
                     .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(2)));
+
     CacheManager cacheManager = null;
     try {
       // Demonstrating how to create CacheManager outside of try(resource) syntax
