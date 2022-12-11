@@ -23,15 +23,17 @@ public class ExpirationMultithreadedProgrammatic {
     CacheConfigurationBuilder<String, String> configurationBuilder =
             newCacheConfigurationBuilder(String.class, String.class, heap(100).offheap(1, MB))
                     .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(2)));
-    try (CacheManager cacheManager = newCacheManagerBuilder()
-            .withCache(cacheAlias, configurationBuilder)
-            .build(true)) {
+    try {
+      CacheManager cacheManager = newCacheManagerBuilder()
+              .withCache(cacheAlias, configurationBuilder)
+              .build(true);
       Cache<String, String> expiryCache = cacheManager.getCache(cacheAlias, String.class, String.class);
 
       exerciseCache(expiryCache);
       Thread.sleep(3000);
 
       LOGGER.info("Closing cache manager");
+      cacheManager.close();
     } catch (InterruptedException e) {
       throw new RuntimeException(e);
     }
