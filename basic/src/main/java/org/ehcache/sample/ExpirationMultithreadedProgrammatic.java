@@ -42,9 +42,10 @@ public class ExpirationMultithreadedProgrammatic {
   private static void exerciseCache(Cache<String, String> expiryCache) {
     LOGGER.info("Spawning threads");
     Runnable r = () -> {
+      String key = "wow, a random key!";
+      LOGGER.info("Current cached value: '{}'", expiryCache.get(key));
       LOGGER.info("Putting to cache");
-      String key = "39396ed3-c4c3-4a0e-ab6c-945e5268b722";
-      expiryCache.put(key, "da one!");
+      expiryCache.put(key, "an amazing value goes here!");
       String value = expiryCache.get(key);
       LOGGER.info("Retrieved '{}'", value);
 
@@ -62,6 +63,11 @@ public class ExpirationMultithreadedProgrammatic {
       // Let's run Thread in background..
       // Sometimes you need to run thread in background for your Timer application..
       t.start();
+      try {
+        Thread.sleep(1);
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     LOGGER.info("Putting to cache");
